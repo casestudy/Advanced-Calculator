@@ -1,6 +1,7 @@
 package utilities;
 
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -16,6 +17,8 @@ public class BasicFXUtilities {
     private static String currentResult ;
     private static String lastBuffer ;
     private static String operation ;
+
+    private static String memoryBuffer;
 
     /**
      * Displays a number between from 1 to 9 on the screen
@@ -287,6 +290,8 @@ public class BasicFXUtilities {
 
                         /*We read what is in the buffer and use it as second number*/
                         for (String item : buffer) {
+                            if (Objects.equals(item, "±"))
+                                item = "-" ;
                             secondNumber += item;
                         }
 
@@ -330,6 +335,8 @@ public class BasicFXUtilities {
 
                         /*3 above*/
                         for (String item : buffer) {
+                            if (Objects.equals(item, "±"))
+                                item = "-" ;
                             secondNumber += item;
                         }
 
@@ -360,7 +367,6 @@ public class BasicFXUtilities {
                         BasicFXUtilities.printOperations(operationLists,operationsArea);
                     }
                 }
-
             } else {
                 /*If operations list is not empty and the last element is not an operation, then it means that
                 * We have something like n in the list or n + m
@@ -483,7 +489,6 @@ public class BasicFXUtilities {
                                 } else {
                                     firstNumber += operationList;
                                 }
-
                             }
                         }
 
@@ -519,7 +524,6 @@ public class BasicFXUtilities {
                     * That is there are some operations but there is not a last operation
                     * Probably we did a square root operation*/
                     System.out.println("We will decide whether to continue or not");
-
                 }
             }
         } else {
@@ -595,7 +599,7 @@ public class BasicFXUtilities {
         return lastBuffer;
     }
 
-    private static void setLastBuffer(String lb) {
+    public static void setLastBuffer(String lb) {
         lastBuffer = lb;
     }
 
@@ -608,4 +612,43 @@ public class BasicFXUtilities {
     }
 
 
+    public static String getMemoryBuffer() {
+        return memoryBuffer;
+    }
+
+    public static void setMemoryBuffer(String mb) {
+        memoryBuffer = mb;
+    }
+
+    public static void informationAlerts(String title, String type, String headerText, String message){
+
+        Alert alert ;
+
+        switch (type) {
+            case "ERROR":
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(title);
+                alert.setHeaderText(headerText);
+                alert.setContentText(message);
+                alert.showAndWait() ;
+                break;
+
+            case "WARNING":
+                alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle(title);
+                alert.setHeaderText(headerText);
+                alert.setContentText(message);
+                alert.showAndWait() ;
+                break;
+
+            case "CONFIRMATION":
+                alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle(title);
+                alert.setHeaderText(headerText);
+                alert.setContentText(message);
+                alert.showAndWait() ;
+                break;
+
+        }
+    }
 }

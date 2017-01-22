@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import utilities.BasicFXUtilities;
 
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -33,6 +35,9 @@ public class BasicCalculatorController implements Initializable{
 
     //Will be used to the result from the previous operation
     private String currentResult = "" ;
+
+    @FXML
+    private Label memoryStatus;
 
     /*This list will help us keep track of all the operations we are about to perform*/
     private LinkedList <String> operationLists = new LinkedList<>() ;
@@ -74,11 +79,11 @@ public class BasicCalculatorController implements Initializable{
     @FXML
     void addToMemory(ActionEvent event) {
 
+
     }
 
     @FXML
     void appendNegative(ActionEvent event) {
-
         if (BasicFXUtilities.getCurrentResult() != null){
             if (!BasicFXUtilities.getCurrentResult().isEmpty()) {
                 if (buffer.size() > 0) {
@@ -120,17 +125,26 @@ public class BasicCalculatorController implements Initializable{
 
     @FXML
     void clearAnswerAndOperationArea(ActionEvent event) {
-
+        buffer.clear();
+        answerArea.clear();
+        operationsArea.clear();
+        operationLists.clear();
+        BasicFXUtilities.setCurrentResult("");
+        BasicFXUtilities.setLastBuffer("");
+        answerArea.appendText("0");
     }
 
     @FXML
     void clearAnswerArea(ActionEvent event) {
-
+        buffer.clear();
+        answerArea.clear();
+        answerArea.appendText("0");
     }
 
     @FXML
     void clearMemory(ActionEvent event) {
-
+        BasicFXUtilities.setMemoryBuffer("0");
+        memoryStatus.setText("");
     }
 
     @FXML
@@ -302,7 +316,21 @@ public class BasicCalculatorController implements Initializable{
 
     @FXML
     void performBackSpace(ActionEvent event) {
+        try {
+            buffer.removeLast() ;
+            answerArea.clear();
 
+            for (String bufferList : buffer) {
+                answerArea.appendText(bufferList);
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+        }
+
+        if (buffer.size() == 0) {
+            answerArea.clear();
+            answerArea.appendText("0");
+        }
     }
 
     @FXML
@@ -341,49 +369,58 @@ public class BasicCalculatorController implements Initializable{
                 /*We perform the last operation between the current result and the squared root of the buffer*/
 
                     if (buffer.size() > 0) {
+                        System.out.println("check here =========here toooo");
                         operation = operationLists.getLast() ;
 
                         for (String item : buffer) {
+                            if (Objects.equals(item, "±"))
+                                item = "-" ;
                             secondNumber += item;
                         }
-
-                        secondNumber = String.valueOf(Math.sqrt(Double.parseDouble(secondNumber)));
-
-                        operation = "√" ;
-
-                        double result = BasicFXUtilities.performOperation(BasicFXUtilities.getCurrentResult(), secondNumber, operation) ;
-
-                        answerArea.clear();
-                        buffer.clear();
-                        answerArea.appendText(String.valueOf(result));
-
-                        lastBuffer = secondNumber;
-                        BasicFXUtilities.setCurrentResult(String.valueOf(result));
-                        //currentResult = String.valueOf(result);
 
                         operationLists.add(((Button) event.getSource()).getText());
                         operationLists.add(secondNumber);
 
-                        BasicFXUtilities.printOperations(operationLists,operationsArea);
-                    } else {
-                        System.out.println("check here =========");
-                        if (!BasicFXUtilities.getCurrentResult().isEmpty()) {
-                            double result = Math.sqrt(Double.parseDouble(BasicFXUtilities.getCurrentResult())) ;
+                        if (Double.parseDouble(secondNumber) > 0) {
+                            secondNumber = String.valueOf(Math.sqrt(Double.parseDouble(secondNumber)));
+
+                            double result = BasicFXUtilities.performOperation(BasicFXUtilities.getCurrentResult(), secondNumber, operation) ;
+
                             answerArea.clear();
                             buffer.clear();
                             answerArea.appendText(String.valueOf(result));
 
-                            operationLists.add(((Button) event.getSource()).getText());
-                            operationLists.add(BasicFXUtilities.getCurrentResult());
 
-                            System.out.println("The current result is now this: " + BasicFXUtilities.getCurrentResult());
-                            System.out.println("The current result after computation is now this: " + result);
-
-                            lastBuffer = BasicFXUtilities.getCurrentResult() ;
+                            lastBuffer = secondNumber;
                             BasicFXUtilities.setCurrentResult(String.valueOf(result));
                             //currentResult = String.valueOf(result);
 
                             BasicFXUtilities.printOperations(operationLists,operationsArea);
+                        } else {
+                            BasicFXUtilities.informationAlerts("Warning - Possible illegal operation!" , "WARNING" ,"Operation: sqrt("+BasicFXUtilities.getCurrentResult()+")" , "The Square root of negative numbers does not exist unless in the complex domain. If you really want to get an answer to that operation, then please go to the scientific section.\n\nGo to scientific section now?");
+                        }
+                    } else {
+                        if (!BasicFXUtilities.getCurrentResult().isEmpty()) {
+                            if (Double.parseDouble(BasicFXUtilities.getCurrentResult()) > 0) {
+                                double result = Math.sqrt(Double.parseDouble(BasicFXUtilities.getCurrentResult())) ;
+                                answerArea.clear();
+                                buffer.clear();
+                                answerArea.appendText(String.valueOf(result));
+
+                                operationLists.add(((Button) event.getSource()).getText());
+                                operationLists.add(BasicFXUtilities.getCurrentResult());
+
+                                System.out.println("The current result is now this: " + BasicFXUtilities.getCurrentResult());
+                                System.out.println("The current result after computation is now this: " + result);
+
+                                lastBuffer = BasicFXUtilities.getCurrentResult() ;
+                                BasicFXUtilities.setCurrentResult(String.valueOf(result));
+                                //currentResult = String.valueOf(result);
+
+                                BasicFXUtilities.printOperations(operationLists,operationsArea);
+                            } else {
+                                BasicFXUtilities.informationAlerts("Warning - Possible illegal operation!" , "WARNING" ,"Operation: sqrt("+BasicFXUtilities.getCurrentResult()+")" , "The Square root of negative numbers does not exist unless in the complex domain. If you really want to get an answer to that operation, then please go to the scientific section.\n\nGo to scientific section now?");
+                            }
                         } else {
                             System.out.printf("What do you think caused this? DEBUG");
                         }
@@ -392,22 +429,27 @@ public class BasicCalculatorController implements Initializable{
                 /*Probably we have just the buffer. Can't think of a reason why, but we should just
                 * do the sqrt of the current result and display*/
 
-                    double result = Math.sqrt(Double.parseDouble(currentResult)) ;
+                    if (Double.parseDouble(BasicFXUtilities.getCurrentResult()) > 0) {
+                        double result = Math.sqrt(Double.parseDouble(BasicFXUtilities.getCurrentResult())) ;
 
-                    answerArea.clear();
-                    buffer.clear();
-                    answerArea.appendText(String.valueOf(result));
+                        answerArea.clear();
+                        buffer.clear();
+                        answerArea.appendText(String.valueOf(result));
 
-                    operation = "√" ;
+                        //operation = "√" ;
 
-                    operationLists.add(((Button) event.getSource()).getText()) ;
-                    operationLists.add(BasicFXUtilities.getCurrentResult());
+                        operationLists.add(((Button) event.getSource()).getText()) ;
+                        operationLists.add(BasicFXUtilities.getCurrentResult());
 
-                    lastBuffer = BasicFXUtilities.getCurrentResult() ;
-                    BasicFXUtilities.setCurrentResult(String.valueOf(result));
-                    //currentResult = String.valueOf(result) ;
+                        lastBuffer = BasicFXUtilities.getCurrentResult() ;
+                        BasicFXUtilities.setCurrentResult(String.valueOf(result));
+                        //currentResult = String.valueOf(result) ;
 
-                    BasicFXUtilities.printOperations(operationLists,operationsArea);
+                        BasicFXUtilities.printOperations(operationLists,operationsArea);
+                    } else {
+                        BasicFXUtilities.informationAlerts("Warning - Possible illegal operation!" , "WARNING" ,"Operation: sqrt("+BasicFXUtilities.getCurrentResult()+")" , "The Square root of negative numbers does not exist unless in the complex domain. If you really want to get an answer to that operation, then please go to the scientific section.\n\nGo to scientific section now?");
+                    }
+
                 }
             } else {
             /*Current result is empty. This may mean that this is the first time we are pressing the sqrt button
@@ -419,33 +461,68 @@ public class BasicCalculatorController implements Initializable{
                 /*Then perform squared root on the buffer*/
 
                     for (String item : buffer) {
+                        if (Objects.equals(item, "±"))
+                            item = "-" ;
                         firstNumber += item;
                     }
 
-                    double result = Math.sqrt(Double.parseDouble(firstNumber)) ;
-                    answerArea.clear();
-                    buffer.clear();
-                    answerArea.appendText(String.valueOf(result));
+                    if (Double.parseDouble(firstNumber) > 0) {
+                        double result = Math.sqrt(Double.parseDouble(firstNumber)) ;
+                        answerArea.clear();
+                        buffer.clear();
+                        answerArea.appendText(String.valueOf(result));
 
-                    operation = "√" ;
+                        //operation = "√" ;
 
-                    lastBuffer = firstNumber;
-                    BasicFXUtilities.setCurrentResult(String.valueOf(result));
-                    //currentResult = String.valueOf(result) ;
+                        //lastBuffer = firstNumber;
+                        BasicFXUtilities.setLastBuffer(firstNumber);
+                        BasicFXUtilities.setCurrentResult(String.valueOf(result));
+                        //currentResult = String.valueOf(result) ;
 
-                    operationLists.add(((Button) event.getSource()).getText()) ;
-                    operationLists.add(firstNumber);
+                        operationLists.add(((Button) event.getSource()).getText()) ;
+                        operationLists.add(firstNumber);
 
-                    BasicFXUtilities.printOperations(operationLists,operationsArea);
+                        BasicFXUtilities.printOperations(operationLists,operationsArea);
+                    } else {
+                        BasicFXUtilities.informationAlerts("Warning - Possible illegal operation!" , "WARNING" ,"Operation: sqrt("+BasicFXUtilities.getCurrentResult()+")" , "The Square root of negative numbers does not exist unless in the complex domain. If you really want to get an answer to that operation, then please go to the scientific section.\n\nGo to scientific section now?");
+                    }
                 } else {
                 /*Here we check if there is a current result and use*/
                     System.out.println("Maybe you should think of poping up to tell user to add some numbers");
                 }
             }
         } else {
-            System.out.println("Please DEBUG what may have happened here");
-        }
+            if (buffer.size() > 0) {
+                /*There is no current result, then this may mean that we are performing squared root for the first time*/
 
+                for (String item : buffer) {
+                    if (Objects.equals(item, "±"))
+                        item = "-" ;
+                    firstNumber += item ;
+                }
+
+                if (Double.parseDouble(firstNumber) > 0) {
+                    double result = Math.sqrt(Double.parseDouble(firstNumber));
+
+                    buffer.clear();
+                    buffer.clear();
+                    answerArea.clear();
+                    answerArea.appendText(String.valueOf(result));
+
+                    BasicFXUtilities.setLastBuffer(firstNumber);
+                    BasicFXUtilities.setCurrentResult(String.valueOf(result));
+
+                    operationLists.add(((Button) event.getSource()).getText()) ;
+                    operationLists.add(firstNumber);
+
+                    BasicFXUtilities.printOperations(operationLists,operationsArea);
+                } else {
+                    BasicFXUtilities.informationAlerts("Warning - Possible illegal operation!" , "WARNING" ,"Operation: sqrt("+BasicFXUtilities.getCurrentResult()+")" , "The Square root of negative numbers does not exist unless in the complex domain. If you really want to get an answer to that operation, then please go to the scientific section.\n\nGo to scientific section now?");
+                }
+            } else {
+                System.out.println("Please DEBUG what may have happened here");
+            }
+        }
     }
 
     @FXML
@@ -514,7 +591,28 @@ public class BasicCalculatorController implements Initializable{
     }
 
     @FXML
-    void recalMemory(ActionEvent event) {
+    void recallMemory(ActionEvent event) {
+        if (BasicFXUtilities.getMemoryBuffer() != null) {
+            answerArea.clear();
+            answerArea.setText(BasicFXUtilities.getMemoryBuffer());
+
+            //operationLists.clear();
+            buffer.clear();
+
+            System.out.println("The memory buffer is: " + BasicFXUtilities.getMemoryBuffer());
+            System.out.println("The current result is: " + BasicFXUtilities.getCurrentResult());
+
+            currentResult = BasicFXUtilities.getCurrentResult() ;
+
+            System.out.println("current result has been set to: " + currentResult);
+
+            buffer.add(BasicFXUtilities.getMemoryBuffer());
+
+            //BasicFXUtilities.setCurrentResult("");
+            //BasicFXUtilities.setLastBuffer("");
+        } else {
+            System.out.println("Memory buffer is false");
+        }
 
     }
 
@@ -525,6 +623,25 @@ public class BasicCalculatorController implements Initializable{
 
     @FXML
     void setMemory(ActionEvent event) {
+        String temp = "";
+
+        if (BasicFXUtilities.getCurrentResult() != null) {
+            if (BasicFXUtilities.getCurrentResult().isEmpty()) {
+                if (buffer.size() != 0) {
+                    for (String aBuffer : buffer) {
+                        temp += aBuffer;
+                    }
+
+                    BasicFXUtilities.setMemoryBuffer(temp) ;
+                    memoryStatus.setText("M");
+                }
+            } else {
+                BasicFXUtilities.setMemoryBuffer(BasicFXUtilities.getCurrentResult());
+                memoryStatus.setText("M");
+            }
+        } else {
+            System.out.println("Current result is null");
+        }
 
     }
 
