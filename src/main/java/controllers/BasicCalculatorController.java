@@ -225,6 +225,8 @@ public class BasicCalculatorController implements Initializable{
                         buffer.clear();
                         answerArea.appendText(String.valueOf(result));
 
+                        lastBuffer = secondNumber ;
+
                         BasicFXUtilities.setCurrentResult(String.valueOf(result));
 
                         operationLists.add("1");
