@@ -193,7 +193,112 @@ public class BasicCalculatorController implements Initializable{
 
     @FXML
     void performReciprocal(ActionEvent event) {
-        
+        /*We want to perform the reciprocal of a number, that is 1/x.
+        * It can either be on a current result ot on a number we just entered.*/
+
+        if (BasicFXUtilities.getCurrentResult() != null) {
+            if (!BasicFXUtilities.getCurrentResult().isEmpty()){
+                /*Current result is not empty, this means that we are performing the
+                * reciprocal operation on the current result*/
+
+                if (operationLists.size() > 0) {
+                    /*We first check if there are elements in the operations list.
+                    * If yes, then we use the elements and the operation along side the reciprocal*/
+
+                    String secondNumber = "", firstNumber = "" ;
+
+                    if (buffer.size() > 0) {
+
+                        for (String item : buffer) {
+                            if (Objects.equals(item, "±"))
+                                item = "-" ;
+                            secondNumber += item;
+                        }
+
+                        firstNumber = String.valueOf(1 / Double.parseDouble(secondNumber));
+
+                        operation = operationLists.getLast() ;
+
+                        double result = BasicFXUtilities.performOperation(BasicFXUtilities.getCurrentResult(), firstNumber,operation) ;
+
+                        answerArea.clear();
+                        buffer.clear();
+                        answerArea.appendText(String.valueOf(result));
+
+                        BasicFXUtilities.setCurrentResult(String.valueOf(result));
+
+                        operationLists.add("1");
+                        operationLists.add("÷");
+                        operationLists.add(secondNumber);
+
+                        BasicFXUtilities.printOperations(operationLists,operationsArea);
+                    } else {
+                        /*Buffer is zero means that we have not yet entered a buffer*/
+                        System.out.println("Perhaps you enter some number in the buffer? But operations list is > 0. So we might have a current result");
+                        double result = 1 / Double.parseDouble(BasicFXUtilities.getCurrentResult()) ;
+
+                        answerArea.clear();
+                        buffer.clear();
+                        answerArea.appendText(String.valueOf(result));
+
+                        BasicFXUtilities.setCurrentResult(String.valueOf(result));
+
+                        operationLists.add("1");
+                        operationLists.add("÷");
+                        operationLists.add(BasicFXUtilities.getCurrentResult());
+
+                        BasicFXUtilities.printOperations(operationLists,operationsArea);
+                    }
+                } else {
+                    /*There are no elements in the operations list and so this is our very first time
+                    * and so we might not have any result*/
+                    System.out.println("Please debug what should be done here.");
+                }
+            } else {
+                System.out.println("Current result is empty but I still got here. This is a bug. What should I do?");
+                double result = 1 / Double.parseDouble(BasicFXUtilities.getCurrentResult());
+
+                answerArea.clear();
+                buffer.clear();
+                answerArea.appendText(String.valueOf(result));
+
+                BasicFXUtilities.setCurrentResult(String.valueOf(result));
+
+                operationLists.add("1");
+                operationLists.add("÷");
+                operationLists.add(BasicFXUtilities.getCurrentResult());
+
+                BasicFXUtilities.printOperations(operationLists,operationsArea);
+            }
+        } else{
+            /*We have no current result, then we try the buffer*/
+            String secondNumber = "";
+            if (buffer.size() > 0) {
+                /*Read all the numbers from the buffer and use in the operation*/
+                for (String item : buffer) {
+                    if (Objects.equals(item, "±"))
+                        item = "-" ;
+                    secondNumber += item;
+                }
+
+                double result = 1 / Double.parseDouble(secondNumber) ;
+
+                answerArea.clear();
+                buffer.clear();
+                answerArea.appendText(String.valueOf(result));
+
+                BasicFXUtilities.setCurrentResult(String.valueOf(result));
+
+                operationLists.add("1");
+                operationLists.add("÷");
+                operationLists.add(secondNumber);
+
+                BasicFXUtilities.printOperations(operationLists,operationsArea);
+            } else {
+                /*No current result and no buffer*/
+                System.out.println("No current result and no buffer");
+            }
+        }
     }
 
     @FXML
