@@ -502,6 +502,15 @@ public class BasicFXUtilities {
                             secondNumber += item ;
                         }
 
+                        /*We now perform the operation*/
+                        if (Objects.equals(firstNumber.substring(0, 1), "±")){
+                            firstNumber = firstNumber.replace("±" , "-") ;
+                        }
+
+                        if (Objects.equals(secondNumber.substring(0, 1), "±")){
+                            secondNumber = secondNumber.replace("±" , "-") ;
+                        }
+
                         System.out.println("The first number iis: " + firstNumber + " and the second number is: " + secondNumber);
                         double result = BasicFXUtilities.performOperation(firstNumber,secondNumber,operation);
                         answerArea.clear();

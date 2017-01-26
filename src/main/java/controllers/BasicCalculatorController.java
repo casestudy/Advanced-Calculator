@@ -101,8 +101,13 @@ public class BasicCalculatorController implements Initializable{
                     System.out.println("The buffer now is: " + buffer);
                 }
             } else {
-                System.out.println("Current result is zero===========");
-                System.out.println("Display current operations list again: " + operationLists);
+                if (buffer.size() > 0) {
+                    answerArea.insertText(0,"-");
+                    buffer.addFirst(((Button) event.getSource()).getText());
+                } else {
+                    System.out.println("Current result is zero===========");
+                    System.out.println("Display current operations list again: " + operationLists);
+                }
             }
         } else {
             if (buffer.size() > 0){
@@ -149,169 +154,7 @@ public class BasicCalculatorController implements Initializable{
 
     @FXML
     void performAddition(ActionEvent event) {
-
         displayResults(event);
-
-
-        /*String firstNumber = "", secondNumber = "" ;
-
-        if (operationLists.size() > 0){
-            *//*If we have done some operations before. What ever the operations are. We have already have something like this
-            * n+
-            * It means we are pressing the operations for a second time. This might mean that we want
-            * to add what is in the operations list (First number) and what we currently have in the buffer (Second number)*//*
-
-            if (BasicFXUtilities.checkLastItemInOperationList(operationLists)){
-                *//*If operations list is not empty, it means we either have something like
-                * n in the list or n+ or n- et cetera in the list
-                * So we check if the buffer is empty or not*//*
-
-                if (buffer.size() == 0){
-                    *//*Buffer is zero in this case will mean that, we have something like
-                    * n+ or n- or n* or n/ et cetera and we try to press a + again.
-                    * This check will help us prevent cases like n+* or n*- et cetera*//*
-
-                    *//*We remove the last operation and replace with a +.
-                    * Probably the user had press n+ and then change his or her mind and now press -
-                    * so we don't want to have something like n-+*//*
-                    operationLists.removeLast() ;
-                    operationLists.addLast(((Button) event.getSource()).getText());
-
-                    System.out.println("I tried to add :D");
-
-                    *//*We now print and update the operation area*//*
-                    BasicFXUtilities.printOperations(operationLists,operationsArea);
-                } else {
-                    *//*Buffer not zero in this case will mean that
-                    * we have something like n+ or n* or n- or n/
-                    * So we remove the last operation, and replace it with + and then
-                    * perform the add between what is in the operations list or current result and what is in the buffer*//*
-
-
-                    *//*We remove the last operation and replace with a +.
-                    * Probably the user had press n+ and then change his or her mind and now press -
-                    * so we don't want to have something like n-+*//*
-                    operationLists.removeLast() ;
-                    operationLists.addLast(((Button) event.getSource()).getText());
-
-                    if (!currentResult.isEmpty()){
-                        *//*If current result is not empty then use it and add to the buffer*//*
-
-                        operation = operationLists.getLast() ;
-
-                        *//*We read what is in the buffer and use it as second number*//*
-                        for (String item : buffer) {
-                            secondNumber += item;
-                        }
-
-                        double result = BasicFXUtilities.performOperation(currentResult,secondNumber,operation) ;
-                        answerArea.clear();
-                        buffer.clear();
-                        answerArea.appendText(String.valueOf(result));
-                        lastBuffer = secondNumber ;
-                        currentResult = String.valueOf(result);
-
-                        operationLists.add(secondNumber);
-                        operationLists.addLast(((Button) event.getSource()).getText()) ;
-
-                        *//*We now print and update the operation area*//*
-                        BasicFXUtilities.printOperations(operationLists,operationsArea);
-                    } else {
-                        *//*1: We now read all the numbers from the operations list up to and not including
-                        * the operation and store as the first number
-                        * 2: We read the operation and store in the operation's variable and then
-                        * 3: read what is in the buffer and store as the second number
-                        * 4: Perform the add operation*//*
-
-                        *//*1 above*//*
-                        for (String operationList : operationLists) {
-                            System.out.println("Let us test: " + operationList);
-                            if (!Objects.equals(operationList, ((Button) event.getSource()).getText())) {
-                                firstNumber += operationList;
-                            }
-                        }
-
-                        *//*2 above*//*
-                        operation = operationLists.getLast() ;
-
-                        *//*3 above*//*
-                        for (String item : buffer) {
-                            System.out.println("Let us test again: " + item);
-                            secondNumber += item;
-                        }
-
-                        *//*We now add what is in the buffer to the operations list*//*
-                        for (String item : buffer) {
-                            operationLists.add(item);
-                        }
-
-                        *//*We now perform the add operation*//*
-                        System.out.println("The first number is : " + firstNumber + " and second number is : " + secondNumber);
-                        double result = BasicFXUtilities.performOperation(firstNumber,secondNumber,operation) ;
-                        answerArea.clear(); //We clear the answer area
-                        buffer.clear();
-                        answerArea.appendText(String.valueOf(result)); //We now display the result
-                        currentResult = String.valueOf(result); //We set the current result.
-                        lastBuffer = secondNumber ; //We set the last buffer to be the second number
-
-                        operationLists.addLast(((Button) event.getSource()).getText()) ;
-
-                        *//*We now print and update the operation area*//*
-                        BasicFXUtilities.printOperations(operationLists,operationsArea);
-                    }
-                }
-
-            } else {
-                *//*If operations list is not empty and the last element is not an operation, then it means that
-                * We have something like n in the list or n + m
-                * So we probably want to add a + to the operations list*//*
-
-                *//*We first check if there are any previous results*//*
-                *//*System.out.println("Current result: " + currentResult);
-                System.out.println("Last buffer: " + lastBuffer); *//*
-
-
-                System.out.println("What will I do here ehhh?");
-            }
-        } else {
-            *//*We have done no operations before or we have clear all buffers and caches*//*
-            if (buffer.size() == 0){
-                *//*In case we have done no operations before, then this is probably the first
-                time we launch the app and we press a +. Buffer is zero, it means we have not added any number yet
-                So we should probably perform the add operation on the current result and the last buffer
-                But we check if it exist first. This loop will be reached in case the user just press + on first start of the application*//*
-
-                if (!currentResult.isEmpty()){
-                    double result = BasicFXUtilities.performOperation(lastBuffer,currentResult,operation) ;
-                    answerArea.clear(); //We clear the answer area
-                    answerArea.appendText(String.valueOf(result)); //We now display the result
-                    lastBuffer = currentResult ; //We set the last buffer to be the current result
-                    currentResult = String.valueOf(result); //We set the current result.
-                } else {
-                    System.out.println("I think you should add some numbers first. :D");
-                }
-            } else {
-                *//*If operations list is zero and buffer contains some items. This can either mean that
-                * 1: The buffer is for the first number, so we have something like n in the buffer
-                *
-                * So we store the numbers in the buffer inside the operations list and on the operations area
-                * and have something like this: n+ *//*
-
-                for (int i = 0; i < buffer.size(); i++){
-                    *//*Here we store all the elements in the buffer to the operations list*//*
-                    operationLists.add(i,buffer.get(i));
-                }
-
-                *//*We now add a + to the end so that we now have something like n+*//*
-                operationLists.addLast(((Button) event.getSource()).getText());
-
-                *//*We now print and update the operation area*//*
-                BasicFXUtilities.printOperations(operationLists,operationsArea);
-
-                *//*We now clear the buffer so that we can use it for the second number*//*
-                buffer.clear();
-            }
-        }*/
     }
 
     @FXML
@@ -350,7 +193,7 @@ public class BasicCalculatorController implements Initializable{
 
     @FXML
     void performReciprocal(ActionEvent event) {
-
+        
     }
 
     @FXML
@@ -517,7 +360,7 @@ public class BasicCalculatorController implements Initializable{
 
                     BasicFXUtilities.printOperations(operationLists,operationsArea);
                 } else {
-                    BasicFXUtilities.informationAlerts("Warning - Possible illegal operation!" , "WARNING" ,"Operation: sqrt("+BasicFXUtilities.getCurrentResult()+")" , "The Square root of negative numbers does not exist unless in the complex domain. If you really want to get an answer to that operation, then please go to the scientific section.\n\nGo to scientific section now?");
+                    BasicFXUtilities.informationAlerts("Warning - Possible illegal operation!" , "WARNING" ,"Operation: sqrt("+firstNumber+")" , "The Square root of negative numbers does not exist unless in the complex domain. If you really want to get an answer to that operation, then please go to the scientific section.\n\nGo to scientific section now?");
                 }
             } else {
                 System.out.println("Please DEBUG what may have happened here");
@@ -642,7 +485,6 @@ public class BasicCalculatorController implements Initializable{
         } else {
             System.out.println("Current result is null");
         }
-
     }
 
     @FXML

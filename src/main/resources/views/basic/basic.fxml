@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="403.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BasicCalculatorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="403.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BasicCalculatorController">
    <children>
       <GridPane alignment="center" hgap="3.0" layoutX="9.0" layoutY="120.0" prefHeight="277.0" prefWidth="267.0" vgap="3.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="120.0">
          <rowConstraints>
@@ -61,14 +61,14 @@
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#calculate" prefHeight="70.0" prefWidth="100.0" text="=" GridPane.columnIndex="4" GridPane.rowIndex="4" GridPane.rowSpan="2" />
          </children>
       </GridPane>
-      <Pane layoutX="7.0" layoutY="40.0" prefHeight="71.0" prefWidth="331.0">
+      <Pane layoutX="7.0" layoutY="40.0" prefHeight="71.0" prefWidth="267.0">
          <children>
-            <TextField fx:id="answerArea" alignment="CENTER_RIGHT" editable="false" layoutY="36.0" prefHeight="37.0" prefWidth="280.0" text="0" />
-            <TextField fx:id="operationsArea" alignment="CENTER_RIGHT" editable="false" layoutY="-4.0" prefHeight="37.0" prefWidth="280.0" />
+            <TextField fx:id="answerArea" alignment="CENTER_RIGHT" editable="false" layoutY="36.0" prefHeight="37.0" prefWidth="270.0" text="0" />
+            <TextField fx:id="operationsArea" alignment="CENTER_RIGHT" editable="false" layoutY="-4.0" prefHeight="37.0" prefWidth="270.0" />
             <Label fx:id="memoryStatus" layoutX="4.0" layoutY="33.0" prefHeight="37.0" prefWidth="27.0" />
          </children>
       </Pane>
-      <MenuBar layoutX="-5.0" layoutY="-3.0" prefHeight="30.0" prefWidth="301.0">
+      <MenuBar layoutX="-5.0" layoutY="-3.0" prefHeight="30.0" prefWidth="298.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
