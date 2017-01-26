@@ -20,6 +20,8 @@ public class BasicFXUtilities {
 
     private static String memoryBuffer;
 
+    private String uselessVariable ;
+
     /**
      * Displays a number between from 1 to 9 on the screen
      *
@@ -551,16 +553,38 @@ public class BasicFXUtilities {
                 * and we certainly have a buffer so we will check if we have a buffer here*/
 
                 if (buffer.size() == 0) {
-                    System.out.println("I am unsure of what is happening here.");
+                    System.out.println("The last buffer is: " + getLastBuffer());
+                    System.out.println("The current result is: " + getCurrentResult());
+
+                    /*Set last buffer to current result*/
+                    /*if (Double.parseDouble(getCurrentResult()) == 0) {
+                        System.out.println("I will not change the last buffer just use it");
+                    } else
+                        setLastBuffer(getCurrentResult());*/
+
+
+                    if (operationLists.size() > 0) {
+                        String temp = operationLists.getLast();
+                        double result = performOperation(getCurrentResult(), getLastBuffer(), operationLists.getLast()) ;
+
+                        answerArea.clear();
+                        operationsArea.clear();
+                        buffer.clear();
+                        operationLists.clear();
+
+                        operationLists.add(temp) ;
+
+                        System.out.println("The operation is this again: " + operationLists.getLast());
+
+                        answerArea.appendText(String.valueOf(result));
+                        currentResult = String.valueOf(result) ;
+                        setCurrentResult(currentResult);
+                    } else {
+                        System.out.println("I am unsure of what is happening here.");
+                    }
                 } else {
                     /*Buffer is a not zero, so we will use the current result and the buffer to perform the operation
                     * I am unsure why tho. Keep watch for possible errors*/
-
-                    /*for (String operationList : operationLists) {
-                        if (!Objects.equals(operationList, "+") && !Objects.equals(operationList, "-") && !Objects.equals(operationList, "*") && !Objects.equals(operationList, "÷")) {
-                            firstNumber += operationList;
-                        }
-                    }*/
 
                     operation = operationLists.getLast() ;
                     setOperation(operation);
@@ -650,5 +674,13 @@ public class BasicFXUtilities {
                 break;
 
         }
+    }
+
+    public String getUselessVariable() {
+        return uselessVariable;
+    }
+
+    public void setUselessVariable(String uselessVariable) {
+        this.uselessVariable = uselessVariable;
     }
 }
